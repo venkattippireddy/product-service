@@ -1,7 +1,9 @@
 package com.productservice.controllers;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,23 +13,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import com.productservice.dao.entity.Product;
+import com.productservice.dao.entity.ProductReview;
 import com.productservice.exceptions.ProductNotFoundException;
+import com.productservice.service.ProductReviewService;
 import com.productservice.service.ProductServices;
 
-/**
- * The ProductServiceController class provide rest controller service for given
- * request.
- *
- * @author Tippireddy
- * @since 26-Feb-2019
- */
 @RestController
 public class ProductServiceController {
 
 	@Autowired
 	private ProductServices productService;
+
+	@Autowired
+	private ProductReviewService productReviewService;
 
 	@GetMapping("/products")
 	public ResponseEntity<List<Product>> getProducts() {
@@ -36,15 +42,27 @@ public class ProductServiceController {
 	}
 
 	@GetMapping("/products/{productId}")
-	public ResponseEntity<Product> getProduct(@PathVariable Long productId) {
-		Optional<Product> product = productService.getProduct(productId);
-		return ResponseEntity.ok(product.orElseThrow(
-				() -> new ProductNotFoundException("No Product found with given Informication " + productId)));
+	public ResponseEntity<Resource<Product>> getProduct(@PathVariable Long productId) {
+		return productService.getProduct(productId).map(product -> {
+			product.setReviews(productReviewService.getProductReviews(productId));
+			Resource<Product> resource = new Resource<Product>(product);
+			ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getProducts());
+			resource.add(linkTo.withRel("all-products"));
+			return ResponseEntity.ok(resource);
+		}).orElseThrow(() -> new ProductNotFoundException("id-" + productId));
 	}
 
 	@PostMapping("/products")
 	public ResponseEntity<Product> save(@RequestBody Product product) {
 		return ResponseEntity.ok(productService.saveorUpdate(product));
+	}
+	
+	@PostMapping("/products/{productId}/reviews")
+	public ResponseEntity<ProductReview> saveReviews(@RequestBody ProductReview review, @PathVariable int productId) {
+		productReviewService.saveProductReview(productId, review);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{productId}").buildAndExpand(review.getId())
+				.toUri();
+		return ResponseEntity.created(location).body(review);
 	}
 
 	@PutMapping("/products/{productId}")

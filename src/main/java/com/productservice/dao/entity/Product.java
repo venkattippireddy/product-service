@@ -1,37 +1,36 @@
 package com.productservice.dao.entity;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.util.StringUtils;
 
-/**
- * The Product class used to  save  product data in to DB.
- *
- * @author Tippireddy
- * @since 26-Feb-2019
- */
 @Entity
 @Table(name = "PRODUCT")
 public class Product {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	private String name;
 	private String description;
 	private String version;
-	private double price;
-	private int quantity;
+	private Double price;
+	private Integer quantity;
+	@Transient
+	private List<ProductReview> reviews;
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -59,20 +58,28 @@ public class Product {
 		this.version = version;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
-	public int getQuantity() {
+	public Integer getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(int quantity) {
+	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
+	}
+
+	public List<ProductReview> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<ProductReview> reviews) {
+		this.reviews = reviews;
 	}
 
 	@Override

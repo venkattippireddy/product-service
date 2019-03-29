@@ -12,12 +12,6 @@ import com.productservice.dao.entity.Product;
 import com.productservice.dao.repositorys.ProductRepository;
 import com.productservice.service.ProductServices;
 
-/**
- * The ProductServicesImp class provide services to controller.
- *
- * @author Tippireddy
- * @since 26-Feb-2019
- */
 @Service
 public class ProductServicesImp implements ProductServices {
 

@@ -5,12 +5,6 @@ import java.util.Optional;
 
 import com.productservice.dao.entity.Product;
 
-/**
- * The ProductServices contract for  product service.
- *
- * @author Tippireddy
- * @since 26-Feb-2019
- */
 public interface ProductServices {
 
 	public List<Product> getProducts();
