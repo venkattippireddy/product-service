@@ -38,14 +38,14 @@ public class ProductServiceTest {
 
 	@BeforeClass
 	public static void setProducts() {
-		product1.setId(1);
+		product1.setId(new Long(1));
 		product1.setName("Samsung HD");
 		product1.setDescription("Default HD");
 		product1.setPrice(32457.50);
 		product1.setQuantity(5);
 		product1.setVersion("1");
 
-		product2.setId(2);
+		product2.setId(new Long(2));
 		product2.setName("Samsung Full HD");
 		product2.setDescription("Full HD");
 		product2.setPrice(39457.50);

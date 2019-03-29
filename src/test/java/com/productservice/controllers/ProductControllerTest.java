@@ -46,21 +46,21 @@ public class ProductControllerTest {
 	@BeforeClass
 	public static void initialize() throws JSONException {
 
-		mockProd1.setId(1);
+		mockProd1.setId(new Long(1));
 		mockProd1.setName("Samsung HD");
 		mockProd1.setDescription("Default HD");
 		mockProd1.setPrice(32457.50);
 		mockProd1.setQuantity(5);
 		mockProd1.setVersion("1");
 
-		mockProd2.setId(2);
+		mockProd2.setId(new Long(2));
 		mockProd2.setName("Samsung Full HD");
 		mockProd2.setDescription("Full HD");
 		mockProd2.setPrice(39457.50);
 		mockProd2.setQuantity(4);
 		mockProd2.setVersion("1");
 
-		mockProd3.setId(3);
+		mockProd3.setId(new Long(3));
 		mockProd3.setName("Samsung DTH");
 		mockProd3.setDescription("DTH");
 		mockProd3.setPrice(36457.50);
