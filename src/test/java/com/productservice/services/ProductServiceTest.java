@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.productservice.dao.entity.Product;
 import com.productservice.dao.repositorys.ProductRepository;
 import com.productservice.exceptions.ProductNotFoundException;
-import com.productservice.service.serviceimpl.ProductServicesImp;
+import com.productservice.service.serviceimpl.ProductServicesImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,7 +31,7 @@ public class ProductServiceTest {
 	private ProductRepository productRepository;
 
 	@InjectMocks
-	private ProductServicesImp productService;
+	private ProductServicesImpl productService;
 
 	static Product product1 = new Product();
 	static Product product2 = new Product();

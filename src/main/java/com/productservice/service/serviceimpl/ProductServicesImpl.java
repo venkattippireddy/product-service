@@ -13,7 +13,7 @@ import com.productservice.dao.repositorys.ProductRepository;
 import com.productservice.service.ProductServices;
 
 @Service
-public class ProductServicesImp implements ProductServices {
+public class ProductServicesImpl implements ProductServices {
 
 	@Autowired
 	private ProductRepository productRepository;
