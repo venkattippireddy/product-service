@@ -20,6 +20,7 @@ import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import com.productservice.ProductReviewServiceProxy;
 import com.productservice.dao.entity.Product;
 import com.productservice.dao.entity.ProductReview;
 import com.productservice.exceptions.ProductNotFoundException;
@@ -35,6 +36,9 @@ public class ProductServiceController {
 	@Autowired
 	private ProductReviewService productReviewService;
 
+	@Autowired
+	private ProductReviewServiceProxy productReviewServiceProxy;
+
 	@GetMapping("/products")
 	public ResponseEntity<List<Product>> getProducts() {
 		List<Product> products = productService.getProducts();
@@ -44,7 +48,7 @@ public class ProductServiceController {
 	@GetMapping("/products/{productId}")
 	public ResponseEntity<Resource<Product>> getProduct(@PathVariable Long productId) {
 		return productService.getProduct(productId).map(product -> {
-			product.setReviews(productReviewService.getProductReviews(productId));
+			product.setReviews(productReviewServiceProxy.getProductReviews("", productId));
 			Resource<Product> resource = new Resource<Product>(product);
 			ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).getProducts());
 			resource.add(linkTo.withRel("all-products"));
@@ -52,17 +56,17 @@ public class ProductServiceController {
 		}).orElseThrow(() -> new ProductNotFoundException("id-" + productId));
 	}
 
-	@PostMapping("/products")
-	public ResponseEntity<Product> save(@RequestBody Product product) {
-		return ResponseEntity.ok(productService.saveorUpdate(product));
-	}
-	
 	@PostMapping("/products/{productId}/reviews")
 	public ResponseEntity<ProductReview> saveReviews(@RequestBody ProductReview review, @PathVariable int productId) {
 		productReviewService.saveProductReview(productId, review);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{productId}").buildAndExpand(review.getId())
-				.toUri();
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{productId}")
+				.buildAndExpand(review.getId()).toUri();
 		return ResponseEntity.created(location).body(review);
+	}
+
+	@PostMapping("/products")
+	public ResponseEntity<Product> save(@RequestBody Product product) {
+		return ResponseEntity.ok(productService.saveorUpdate(product));
 	}
 
 	@PutMapping("/products/{productId}")
